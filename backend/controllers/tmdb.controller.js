@@ -106,10 +106,42 @@ const getUpcomingMovies = async (req, res) => {
   }
 };
 
+// Search Movies
+const searchMovies = async (req, res) => {
+  try {
+    const { q } = req.query;
+
+    if (!q || q.trim() === "") {
+      return res.status(400).json({
+        message: "Query parameter 'q' is required",
+        success: false,
+      });
+    }
+
+    const result = await tmdb.get("/search/movie", {
+      params: { query: q },
+    });
+
+    res.status(200).json({
+      message: "Success searching movies",
+      success: true,
+      result: result.data.results,
+    });
+  } catch (error) {
+    console.error(error.response?.data || error.message);
+    res.status(500).json({
+      message: "Internal server error",
+      success: false,
+      error: error.message,
+    });
+  }
+};
+
 export {
   getNowPlayingMovies,
   getTrendingMovies,
   getPopularMovies,
   getTopRatedMovies,
   getUpcomingMovies,
+  searchMovies,
 };

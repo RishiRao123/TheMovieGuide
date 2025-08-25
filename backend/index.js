@@ -19,7 +19,7 @@ connectDB();
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1", userRoutes);
 app.use("/api/v1", reviewRoutes);
-app.use("/api/v1/", tmdbRoutes);
+app.use("/api/v1", tmdbRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is Running...");
