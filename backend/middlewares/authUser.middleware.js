@@ -12,15 +12,17 @@ const authUser = (req, res, next) => {
     }
 
     const token = authHeader.split(" ")[1];
-    const decoded = jwt.decode(token, process.env.JWT_SECRET);
 
-    req.user = { id: decoded.id };
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    req.user = { id: decoded.id };  
 
     next();
   } catch (error) {
     res.status(401).json({
       message: "Unauthorized - Invalid token",
       success: false,
+      error: error.message,
     });
   }
 };
