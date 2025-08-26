@@ -1,4 +1,4 @@
-import FavouritesModel from "../models/favourites.model.js";
+import FavouriteModel from "../models/favourites.model.js";
 
 // Get user favourite movies
 const getUserFavourites = async (req, res) => {
@@ -12,7 +12,7 @@ const getUserFavourites = async (req, res) => {
       });
     }
 
-    const favourites = await FavouritesModel.find({ user: userId });
+    const favourites = await FavouriteModel.find({ user: userId });
 
     return res.status(200).json({
       message: "Fetched user favourites successfully",
@@ -32,21 +32,32 @@ const getUserFavourites = async (req, res) => {
 const addFavourite = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { movieId, movieTitle, moviePoster, movieReleaseDate } = req.body;
+    const {
+      movieId,
+      mediaType,
+      movieTitle,
+      moviePoster,
+      movieReleaseDate,
+      movieOverview,
+      movieRating,
+    } = req.body;
 
-    if (!movieId) {
+    if (!movieId || !mediaType) {
       return res.status(400).json({
-        message: "Movie ID is required",
+        message: "Movie ID and mediaType are required",
         success: false,
       });
     }
 
-    const favourite = new FavouritesModel({
+    const favourite = new FavouriteModel({
       user: userId,
       movieId,
+      mediaType,
       movieTitle,
       moviePoster,
       movieReleaseDate,
+      movieOverview,
+      movieRating,
     });
 
     await favourite.save();
@@ -77,6 +88,7 @@ const deleteFavourite = async (req, res) => {
   try {
     const userId = req.user.id;
     const { movieId } = req.params;
+
     if (!movieId) {
       return res.status(400).json({
         message: "Movie ID is required",
@@ -84,7 +96,7 @@ const deleteFavourite = async (req, res) => {
       });
     }
 
-    const deleted = await FavouritesModel.findOneAndDelete({
+    const deleted = await FavouriteModel.findOneAndDelete({
       user: userId,
       movieId: movieId,
     });

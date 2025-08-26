@@ -1,12 +1,12 @@
 import axios from "axios";
+import { TMDB_KEY } from "../constants/constants.js";
 
-const TMDB_API = process.env.TMDB_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
 
 const tmdb = axios.create({
   baseURL: BASE_URL,
   params: {
-    api_key: TMDB_API,
+    api_key: TMDB_KEY,
     language: "en-US",
   },
 });
@@ -15,18 +15,13 @@ const tmdb = axios.create({
 const getNowPlayingMovies = async (req, res) => {
   try {
     const result = await tmdb.get("/movie/now_playing");
-
     res.status(200).json({
-      message: "Success getting trending movies",
+      message: "Success getting now playing movies",
       success: true,
       result: result.data.results,
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Internal server error",
-      success: false,
-      error: error.message,
-    });
+    handleError(res, error);
   }
 };
 
@@ -34,18 +29,13 @@ const getNowPlayingMovies = async (req, res) => {
 const getTrendingMovies = async (req, res) => {
   try {
     const result = await tmdb.get("/trending/movie/day");
-
     res.status(200).json({
       message: "Success getting trending movies",
       success: true,
       result: result.data.results,
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Internal server error",
-      success: false,
-      error: error.message,
-    });
+    handleError(res, error);
   }
 };
 
@@ -53,18 +43,13 @@ const getTrendingMovies = async (req, res) => {
 const getPopularMovies = async (req, res) => {
   try {
     const result = await tmdb.get("/movie/popular");
-
     res.status(200).json({
       message: "Success getting popular movies",
       success: true,
       result: result.data.results,
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Internal server error",
-      success: false,
-      error: error.message,
-    });
+    handleError(res, error);
   }
 };
 
@@ -72,18 +57,13 @@ const getPopularMovies = async (req, res) => {
 const getTopRatedMovies = async (req, res) => {
   try {
     const result = await tmdb.get("/movie/top_rated");
-
     res.status(200).json({
       message: "Success getting top rated movies",
       success: true,
       result: result.data.results,
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Internal server error",
-      success: false,
-      error: error.message,
-    });
+    handleError(res, error);
   }
 };
 
@@ -91,18 +71,13 @@ const getTopRatedMovies = async (req, res) => {
 const getUpcomingMovies = async (req, res) => {
   try {
     const result = await tmdb.get("/movie/upcoming");
-
     res.status(200).json({
       message: "Success getting upcoming movies",
       success: true,
       result: result.data.results,
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Internal server error",
-      success: false,
-      error: error.message,
-    });
+    handleError(res, error);
   }
 };
 
@@ -110,7 +85,6 @@ const getUpcomingMovies = async (req, res) => {
 const searchMovies = async (req, res) => {
   try {
     const { q } = req.query;
-
     if (!q || q.trim() === "") {
       return res.status(400).json({
         message: "Query parameter 'q' is required",
@@ -128,13 +102,36 @@ const searchMovies = async (req, res) => {
       result: result.data.results,
     });
   } catch (error) {
-    console.error(error.response?.data || error.message);
-    res.status(500).json({
-      message: "Internal server error",
-      success: false,
-      error: error.message,
-    });
+    handleError(res, error);
   }
+};
+
+// Movie Details + Credits
+const getMovieDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [details, credits] = await Promise.all([
+      tmdb.get(`/movie/${id}`),
+      tmdb.get(`/movie/${id}/credits`),
+    ]);
+    res.status(200).json({
+      message: "Success getting movie details",
+      success: true,
+      result: { ...details.data, credits: credits.data },
+    });
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
+// Error Handler
+const handleError = (res, error) => {
+  console.error(error.response?.data || error.message);
+  res.status(500).json({
+    message: "Internal server error",
+    success: false,
+    error: error.message,
+  });
 };
 
 export {
@@ -144,4 +141,5 @@ export {
   getTopRatedMovies,
   getUpcomingMovies,
   searchMovies,
+  getMovieDetails,
 };

@@ -1,13 +1,13 @@
-import express from "express";
 import dotenv from "dotenv";
+dotenv.config();
+
+import express from "express";
 import cors from "cors";
 import connectDB from "./config/mongodb.js";
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import reviewRoutes from "./routes/review.routes.js";
 import tmdbRoutes from "./routes/tmdb.routes.js";
-
-dotenv.config();
 
 const app = express();
 

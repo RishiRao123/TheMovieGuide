@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 
-const FavouriteSchema = new Schema(
+const WatchlistSchema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
@@ -20,6 +20,10 @@ const FavouriteSchema = new Schema(
     movieReleaseDate: String,
     movieOverview: String,
     movieRating: Number,
+    watched: {
+      type: Boolean,
+      default: false,
+    },
     addedAt: {
       type: Date,
       default: Date.now,
@@ -30,7 +34,9 @@ const FavouriteSchema = new Schema(
   }
 );
 
-FavouriteSchema.index({ user: 1, movieId: 1 }, { unique: true });
-
-const FavouriteModel = mongoose.model("Favourite", FavouriteSchema);
-export default FavouriteModel;
+const WatchlistModel = mongoose.model(
+  "Watchlist",
+  WatchlistSchema,
+  "watchlist"
+);
+export default WatchlistModel;

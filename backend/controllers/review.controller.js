@@ -3,11 +3,11 @@ import ReviewModel from "../models/review.model.js";
 // Post a review
 const createReview = async (req, res) => {
   try {
-    const { message, stars, movieId } = req.body;
+    const { message, stars, movieId, mediaType } = req.body;
 
-    if (!message || !stars) {
+    if (!message || !stars || !movieId || !mediaType) {
       return res.status(400).json({
-        message: "Rating and review message are required",
+        message: "Message, stars, movieId, and mediaType are required",
         success: false,
       });
     }
@@ -19,19 +19,20 @@ const createReview = async (req, res) => {
       });
     }
 
-    const reviewModel = new ReviewModel({
+    const review = new ReviewModel({
       message,
       stars,
       movieId,
+      mediaType,
       user: req.user.id,
     });
 
-    await reviewModel.save();
+    await review.save();
 
     res.status(201).json({
       message: "Review created successfully",
       success: true,
-      data: reviewModel,
+      data: review,
     });
   } catch (error) {
     res.status(500).json({
@@ -42,12 +43,12 @@ const createReview = async (req, res) => {
   }
 };
 
-// Get reviews
+// Get reviews for a movie (by movieId + mediaType)
 const getReviews = async (req, res) => {
   try {
-    const { movieId } = req.params;
+    const { movieId, mediaType } = req.params;
 
-    const reviews = await ReviewModel.find({ movieId }).populate(
+    const reviews = await ReviewModel.find({ movieId, mediaType }).populate(
       "user",
       "username profileImage"
     );
@@ -55,7 +56,7 @@ const getReviews = async (req, res) => {
     res.status(200).json({
       message: "Reviews fetched successfully",
       success: true,
-      reviews: reviews,
+      reviews,
     });
   } catch (error) {
     res.status(500).json({
@@ -69,9 +70,7 @@ const getReviews = async (req, res) => {
 // Get all reviews for a user
 const getUserReviews = async (req, res) => {
   try {
-    const reviews = await ReviewModel.find({ user: req.user.id }).populate(
-      "movieId"
-    );
+    const reviews = await ReviewModel.find({ user: req.user.id });
 
     res.status(200).json({
       message: "User reviews fetched successfully",
@@ -95,9 +94,9 @@ const updateReview = async (req, res) => {
 
     const review = await ReviewModel.findById(reviewId);
 
-    if (!reviewId) {
+    if (!review) {
       return res
-        .status(400)
+        .status(404)
         .json({ message: "Review not found", success: false });
     }
 
@@ -109,14 +108,22 @@ const updateReview = async (req, res) => {
     }
 
     if (message !== undefined) review.message = message;
-    if (stars !== undefined) review.stars = stars;
+    if (stars !== undefined) {
+      if (stars < 1 || stars > 5) {
+        return res.status(400).json({
+          message: "Stars rating must be between 1 and 5",
+          success: false,
+        });
+      }
+      review.stars = stars;
+    }
 
     const updatedReview = await review.save();
 
     res.status(200).json({
-      message: "Review Updated successfully",
+      message: "Review updated successfully",
       success: true,
-      updatedReview: updatedReview,
+      updatedReview,
     });
   } catch (error) {
     res.status(500).json({

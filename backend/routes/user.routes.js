@@ -6,7 +6,17 @@ import {
   getUserProfile,
   updateUserProfile,
 } from "../controllers/user.controller.js";
-import { getUserFavourites, deleteFavourite, addFavourite } from "../controllers/favourites.controller.js";
+import {
+  getUserFavourites,
+  deleteFavourite,
+  addFavourite,
+} from "../controllers/favourites.controller.js";
+import {
+  addToWatchlist,
+  getWatchlist,
+  removeFromWatchlist,
+  toggleWatched,
+} from "../controllers/watchlist.controller.js";
 
 const router = express.Router();
 
@@ -24,5 +34,15 @@ router.delete("/user/profileDelete/:userId", authUser, deleteUserProfile);
 router.get("/user/favourites", authUser, getUserFavourites);
 router.post("/user/favourites", authUser, addFavourite);
 router.delete("/user/favourites/:movieId", authUser, deleteFavourite);
+
+// user watchlist routes
+router.post("/user/watchlist/:userId", authUser, addToWatchlist);
+router.get("/user/watchlist/:userId", authUser, getWatchlist);
+router.delete(
+  "/user/watchlist/:userId/:movieId",
+  authUser,
+  removeFromWatchlist
+);
+router.patch("/user/watchlist/:userId/:movieId", authUser, toggleWatched);
 
 export default router;

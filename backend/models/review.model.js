@@ -23,6 +23,10 @@ const ReviewSchema = new Schema(
       type: String,
       required: true,
     },
+    mediaType: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,
