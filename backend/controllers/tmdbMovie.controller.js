@@ -26,7 +26,7 @@ const getPopularMovies = async (req, res) => {
 // Trending movies
 const getTrendingMovies = async (req, res) => {
   try {
-    const result = await axios.get(`${BASE_URL}/trending/movie/day`, {
+    const response = await axios.get(`${BASE_URL}/trending/movie/day`, {
       params: {
         api_key: TMDB_KEY,
         language: "en-US",
@@ -35,7 +35,7 @@ const getTrendingMovies = async (req, res) => {
     res.status(200).json({
       message: "Success getting trending movies",
       success: true,
-      result: result.data.results,
+      response: response.data,
     });
   } catch (error) {
     handleError(res, error);

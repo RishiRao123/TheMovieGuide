@@ -8,6 +8,15 @@ import {
   getUpcomingMovies,
   searchMovies,
 } from "../controllers/tmdbMovie.controller.js";
+import {
+  getAiringTodayTv,
+  getOnTheAirTv,
+  getPopularTv,
+  getTopRatedTv,
+  getTrendingTodayTv,
+  getTvDetails,
+  searchTv,
+} from "../controllers/tmdbTv.controller.js";
 
 const router = express.Router();
 
@@ -19,5 +28,14 @@ router.get("/movies/now-playing", getNowPlayingMovies);
 router.get("/movies/upcoming", getUpcomingMovies);
 router.get("/movies/search", searchMovies);
 router.get("/movies/:id/cast", getMovieDetails);
+
+// TV Series
+router.get("/tv/airing-today", getAiringTodayTv);
+router.get("/tv/on-the-air", getOnTheAirTv);
+router.get("/tv/popular", getPopularTv);
+router.get("/tv/top-rated", getTopRatedTv);
+router.get("/tv/trending", getTrendingTodayTv);
+router.get("/tv/search", searchTv);
+router.get("/tv/:id/cast", getTvDetails);
 
 export default router;
