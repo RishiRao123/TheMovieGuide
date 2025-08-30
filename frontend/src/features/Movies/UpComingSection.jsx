@@ -1,39 +1,14 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useContext } from "react";
 import MovieCarousel from "../../components/MovieCarousel";
+import { MediaContext } from "../../context/MediaContext";
 
 const UpComingSection = () => {
-  const [movies, setMovies] = useState([]);
-  const [errors, setErrors] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { movies, loading, error } = useContext(MediaContext);
 
-  const BackendUrl = import.meta.env.VITE_BACKEND_URL;
+  if (loading) return <p className='text-center'>Loading...</p>;
+  if (error) return <p className='text-center text-red-500'>{error}</p>;
 
-  const getUpcomingMovies = async () => {
-    try {
-      const url = `${BackendUrl}/api/v1/movies/upcoming`;
-      const response = await axios.get(url, {
-        headers: { "Content-Type": "application/json" },
-      });
-      setMovies(response.data.response?.results || []);
-      setErrors(null);
-    } catch (error) {
-      setErrors(
-        error.response?.data?.message || "Failed to fetch upcoming movies."
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getUpcomingMovies();
-  }, []);
-
-  if (isLoading) return <p className='text-center'>Loading...</p>;
-  if (errors) return <p className='text-center text-red-500'>{errors}</p>;
-
-  return <MovieCarousel movies={movies} title='Upcoming Movies' />;
+  return <MovieCarousel movies={movies.upcoming} title='Upcoming Movies' />;
 };
 
 export default UpComingSection;
