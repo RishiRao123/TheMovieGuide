@@ -11,11 +11,11 @@ const signUpValidation = (req, res, next) => {
       .messages({ "any.only": "Passwords do not match" }),
   });
 
-  const { error } = schema.validate(req.body, { abortEarly: false }); 
+  const { error } = schema.validate(req.body, { abortEarly: false });
 
   if (error) {
     return res.status(400).json({
-      message: "Validation failed",
+      message: "Validation failed. Please check all fields",
       errors: error.details.map((err) => ({
         field: err.path[0],
         message: err.message,
@@ -46,6 +46,5 @@ const loginValidation = (req, res, next) => {
 
   next();
 };
-
 
 export { signUpValidation, loginValidation };
