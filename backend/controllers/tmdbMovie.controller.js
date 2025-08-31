@@ -130,23 +130,35 @@ const searchMovies = async (req, res) => {
   }
 };
 
-// Movie Details + Credits
+// Movie Details 
 const getMovieDetails = async (req, res) => {
   try {
     const { id } = req.params;
-    const [details, credits] = await Promise.all([
+    const [details, credits, providers] = await Promise.all([
       axios.get(`${BASE_URL}/movie/${id}`, {
         params: { api_key: TMDB_KEY, language: "en-US" },
       }),
       axios.get(`${BASE_URL}/movie/${id}/credits`, {
         params: { api_key: TMDB_KEY, language: "en-US" },
       }),
+      axios.get(`${BASE_URL}/movie/${id}/watch/providers`, {
+        params: { api_key: TMDB_KEY, language: "en-US" },
+      }),
     ]);
+
+    const providerData =
+      providers.data.results?.IN?.flatrate ||
+      providers.data.results?.US?.flatrate ||
+      [];
 
     res.status(200).json({
       message: "Success getting movie details",
       success: true,
-      result: { ...details.data, credits: credits.data },
+      result: {
+        ...details.data,
+        credits: credits.data,
+        streamingProviders: providerData,
+      },
     });
   } catch (error) {
     handleError(res, error);

@@ -27,7 +27,7 @@ router.get("/movies/top-rated", getTopRatedMovies);
 router.get("/movies/now-playing", getNowPlayingMovies);
 router.get("/movies/upcoming", getUpcomingMovies);
 router.get("/movies/search", searchMovies);
-router.get("/movies/:id/cast", getMovieDetails);
+router.get("/movies/:id", getMovieDetails);
 
 // TV Series
 router.get("/tv/airing-today", getAiringTodayTv);
@@ -36,6 +36,6 @@ router.get("/tv/popular", getPopularTv);
 router.get("/tv/top-rated", getTopRatedTv);
 router.get("/tv/trending", getTrendingTodayTv);
 router.get("/tv/search", searchTv);
-router.get("/tv/:id/cast", getTvDetails);
+router.get("/tv/:id", getTvDetails);
 
 export default router;
