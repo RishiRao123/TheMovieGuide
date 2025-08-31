@@ -5,6 +5,7 @@ import {
   getTrendingMovies,
   getUpcomingMovies,
   getTrendingTV,
+  getPopularTV,
 } from "../services/mediaService";
 
 export const MediaContext = createContext();
@@ -16,7 +17,7 @@ export const MediaProvider = ({ children }) => {
     trending: [],
     upcoming: [],
   });
-  const [tvShows, setTvShows] = useState({ trending: [] });
+  const [tvShows, setTvShows] = useState({ trending: [], popular: [] });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,16 +30,18 @@ export const MediaProvider = ({ children }) => {
           trendingMoviesRes,
           upcomingRes,
           trendingTVRes,
+          popularTVRes,
         ] = await Promise.all([
           getPopularMovies(),
           getTopRatedMovies(),
           getTrendingMovies(),
           getUpcomingMovies(),
           getTrendingTV(),
+          getPopularTV(),
         ]);
 
         setMovies({
-          popular: popularRes?.data?.response || [],
+          popular: popularRes?.data?.response.results || [],
           topRated: topRatedRes?.data?.response?.results || [],
           trending: trendingMoviesRes?.data?.response?.results || [],
           upcoming: upcomingRes?.data?.response?.results || [],
@@ -46,6 +49,7 @@ export const MediaProvider = ({ children }) => {
 
         setTvShows({
           trending: trendingTVRes?.data?.response?.results || [],
+          popular: popularTVRes?.data?.response?.results || [],
         });
       } catch (err) {
         console.error("Error fetching media:", err);

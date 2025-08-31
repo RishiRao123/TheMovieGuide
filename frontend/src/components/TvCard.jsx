@@ -2,7 +2,7 @@ import React from "react";
 import { Play, Plus, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const MovieCard = ({ title, rating, movieID, poster, size = "medium" }) => {
+const TvCard = ({ name, rating, tvID, poster, size = "medium" }) => {
   const sizeClasses = {
     small: "w-48 h-72",
     medium: "w-64 h-80",
@@ -11,7 +11,7 @@ const MovieCard = ({ title, rating, movieID, poster, size = "medium" }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/movie/${movieID}`);
+    navigate(`/tv/${tvID}`);
   };
 
   return (
@@ -22,7 +22,7 @@ const MovieCard = ({ title, rating, movieID, poster, size = "medium" }) => {
       {/* Poster */}
       <img
         src={poster}
-        alt={title}
+        alt={name}
         className='w-full h-full object-cover transition-transform duration-500 group-hover:scale-110'
       />
 
@@ -53,7 +53,7 @@ const MovieCard = ({ title, rating, movieID, poster, size = "medium" }) => {
         {/* Title at bottom */}
         <div className='flex items-center justify-center px-4 pb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-500'>
           <span className='bg-yellow-500 text-black text-sm font-bold px-2 py-1 rounded-md shadow-md'>
-            {title}
+            {name}
           </span>
         </div>
       </div>
@@ -61,4 +61,4 @@ const MovieCard = ({ title, rating, movieID, poster, size = "medium" }) => {
   );
 };
 
-export default MovieCard;
+export default TvCard;

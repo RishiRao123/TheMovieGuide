@@ -7,10 +7,13 @@ import {
   ChevronDown,
 } from "lucide-react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [movies, setMovies] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [showDownArrow, setShowDownArrow] = useState(true);
+  const navigate = useNavigate();
 
   const BackendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -35,6 +38,18 @@ const Header = () => {
     return () => clearInterval(interval);
   }, [movies]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setShowDownArrow(false);
+      } else {
+        setShowDownArrow(true);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % movies.length);
   const prevSlide = () =>
     setCurrentSlide((prev) => (prev - 1 + movies.length) % movies.length);
@@ -52,7 +67,7 @@ const Header = () => {
               : "opacity-0 pointer-events-none"
           }`}
         >
-          {/* Background image with less visibility */}
+          {/* Background image */}
           <div
             className='absolute inset-0 h-full w-full bg-cover bg-center transition-opacity duration-1000'
             style={{
@@ -61,7 +76,7 @@ const Header = () => {
             }}
           />
 
-          {/* Light overlay */}
+          {/* Overlay */}
           <div className='absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent' />
 
           {/* Slide content */}
@@ -85,7 +100,10 @@ const Header = () => {
                 <Play className='mr-2 h-4 w-4 md:h-5 md:w-5' />
                 Watch Trailer
               </button>
-              <button className='bg-white/20 hover:bg-white/30 border border-white/30 text-white px-4 py-2 md:px-6 md:py-3 font-semibold rounded-lg flex items-center transition-colors cursor-pointer'>
+              <button
+                className='bg-white/20 hover:bg-white/30 border border-white/30 text-white px-4 py-2 md:px-6 md:py-3 font-semibold rounded-lg flex items-center transition-colors cursor-pointer'
+                onClick={() => navigate(`/movie/${movie.id}`)} // use movie.id
+              >
                 <Info className='mr-2 h-4 w-4 md:h-5 md:w-5' />
                 More Info
               </button>
@@ -94,7 +112,7 @@ const Header = () => {
         </div>
       ))}
 
-      {/* Pagination dots with pointer */}
+      {/* Pagination dots */}
       <div className='absolute bottom-16 right-6 flex space-x-2 z-10'>
         {movies.map((_, index) => (
           <button
@@ -123,10 +141,12 @@ const Header = () => {
         <ChevronRight className='h-6 w-6' />
       </button>
 
-      {/* Down indicator */}
-      <div className='fixed left-1/2 bottom-4 -translate-x-1/2 z-[999] animate-bounce cursor-pointer'>
-        <ChevronDown size={36} className='text-primary drop-shadow-lg' />
-      </div>
+      {/* Down indicator (hidden when scrolling) */}
+      {showDownArrow && (
+        <div className='fixed left-1/2 bottom-4 -translate-x-1/2 z-[999] animate-bounce  transition-opacity duration-500'>
+          <ChevronDown size={36} className='text-primary drop-shadow-lg' />
+        </div>
+      )}
     </section>
   );
 };

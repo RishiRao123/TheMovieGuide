@@ -2,10 +2,10 @@ import React from "react";
 import Header from "../components/Header";
 import PopularSection from "../features/Movies/PopularSection";
 import TrendingTvSection from "../features/TvSeries/TrendingTvSection";
-import TopRatedSection from "../features/Movies/TopratedSection";
 import TrendingSection from "../features/Movies/TrendingSection";
 import UpComingSection from "../features/Movies/UpComingSection";
-import Section  from "../components/Section";
+import Section from "../components/Section";
+import PopularTvSection from "../features/TvSeries/PopularTvSection";
 
 const Home = () => {
   return (
@@ -13,7 +13,7 @@ const Home = () => {
       <Header></Header>
       <TrendingSection></TrendingSection>
       <PopularSection></PopularSection>
-      <TopRatedSection></TopRatedSection>
+      <PopularTvSection></PopularTvSection>
       <TrendingTvSection></TrendingTvSection>
       <UpComingSection></UpComingSection>
       <Section></Section>

@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const BackendUrl = import.meta.env.VITE_BACKEND_URL;
+
 const api = axios.create({
-  baseURL: "https://themovieguide.onrender.com/api/v1",
+  baseURL: `${BackendUrl}/api/v1`,
   timeout: 10000,
 });
 
@@ -13,4 +15,4 @@ export const getUpcomingMovies = () => api.get("/movies/upcoming");
 
 // TV Shows
 export const getTrendingTV = () => api.get("/tv/trending");
-export const getNowPlayingTV = () => api.get("/tv/now-playing");
+export const getPopularTV = () => api.get("/tv/popular")

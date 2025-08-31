@@ -42,7 +42,7 @@ const Navbar = () => {
               <button
                 key={link.name}
                 onClick={() => handleNavigate(link.path)}
-                className={`relative text-lg font-medium px-2 py-1 transition-colors ${
+                className={`relative text-lg font-medium px-2 py-1 transition-colors cursor-pointer ${
                   activeLink === link.path
                     ? "text-yellow-500 after:absolute after:left-0 after:bottom-0 after:w-full after:h-0.5 after:bg-yellow-500"
                     : "text-gray-400 hover:text-yellow-500"
@@ -58,7 +58,7 @@ const Navbar = () => {
             {/* Search Link with Icon */}
             <button
               onClick={() => handleNavigate("/search")}
-              className={`flex items-center gap-1 px-3 py-1 text-yellow-500 font-medium rounded-md bg-yellow-500/10 backdrop-blur-sm hover:bg-yellow-500/20 transition relative`}
+              className={`flex items-center gap-1 px-3 py-1 text-yellow-500 font-medium rounded-md bg-yellow-500/10 backdrop-blur-sm hover:bg-yellow-500/20 transition relative cursor-pointer`}
             >
               <Search className='w-4 h-4' />
               <span className='text-lg'>Search</span>
@@ -68,7 +68,7 @@ const Navbar = () => {
             {/* Login Button */}
             <button
               onClick={() => navigate("/login")}
-              className='bg-yellow-500 text-black px-4 py-2 rounded-sm font-medium hover:bg-yellow-400 active:bg-primary transition-colors'
+              className='bg-yellow-500 text-black px-4 py-2 rounded-sm font-medium hover:bg-yellow-400 active:bg-primary transition-color cursor-pointer'
             >
               Login
             </button>
