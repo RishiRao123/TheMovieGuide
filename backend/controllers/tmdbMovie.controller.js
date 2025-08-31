@@ -14,9 +14,9 @@ const getPopularMovies = async (req, res) => {
     });
 
     res.status(200).json({
-      message: "Success getting popular movies",
+      message: "Success getting trending movies",
       success: true,
-      response: response.data.results,
+      response: response.data,
     });
   } catch (error) {
     handleError(res, error);
