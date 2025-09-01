@@ -18,6 +18,7 @@ const TvDetails = () => {
     const fetchTvDetails = async () => {
       try {
         const { data } = await axios.get(`${BackendUrl}/api/v1/tv/${id}`);
+
         setTv(data.result);
       } catch (error) {
         console.error("Error fetching TV details:", error);
