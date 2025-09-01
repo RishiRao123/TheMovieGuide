@@ -1,7 +1,5 @@
 import axios from "axios";
-import { TMDB_KEY } from "../constants/constants.js";
-
-const BASE_URL = "https://api.themoviedb.org/3";
+import { TMDB_KEY, BASE_URL, handleError } from "../constants/constants.js";
 
 // Airing today tv series
 const getAiringTodayTv = async (req, res) => {
@@ -91,18 +89,18 @@ const getTrendingTodayTv = async (req, res) => {
 // Search tv series
 const searchTv = async (req, res) => {
   try {
-    const { q } = req.query;
+    const { q, page = 1 } = req.query;
     if (!q || q.trim() === "") {
-      res
+      return res
         .status(400)
         .json({ message: "Query parameter q is required", success: false });
     }
 
     const response = await axios.get(`${BASE_URL}/search/tv`, {
-      params: { query: q, api_key: TMDB_KEY, language: "en-US" },
+      params: { api_key: TMDB_KEY, query: q, language: "en-US", page },
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Success searching tv series",
       success: true,
       response: response.data,
@@ -133,13 +131,30 @@ const getTvDetails = async (req, res) => {
       providers.data.results?.US?.flatrate ||
       [];
 
+    const actors = credits.data.cast
+      .slice(0, 9)
+      .map(({ id, name, character, profile_path }) => ({
+        id,
+        name,
+        character,
+        profile_path,
+      }));
+
+    const creators =
+      details.data.created_by?.map(({ id, name, profile_path }) => ({
+        id,
+        name,
+        profile_path,
+      })) || [];
+
     res.status(200).json({
-      message: "Success getting tv series details",
+      message: "Success getting tv details",
       success: true,
       result: {
         ...details.data,
-        credits: credits.data,
-        streamingProviders: providerData, 
+        credits: actors,
+        creators,
+        streamingProviders: providerData,
       },
     });
   } catch (error) {
@@ -147,13 +162,39 @@ const getTvDetails = async (req, res) => {
   }
 };
 
-const handleError = (res, error) => {
-  console.error(error.response?.data || error.message);
-  res.status(500).json({
-    message: "Internal server error",
-    success: false,
-    error: error.message,
-  });
+// Tv recommendation
+const getTvRecommendations = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const response = await axios.get(`${BASE_URL}/tv/${id}/recommendations`, {
+      params: { api_key: TMDB_KEY, language: "en-US" },
+    });
+
+    res.status(200).json({
+      message: "Success getting tv recommendations",
+      success: true,
+      response: response.data,
+    });
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
+// TV genres
+const getTvGenres = async (req, res) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/genre/tv/list`, {
+      params: { api_key: TMDB_KEY, language: "en-US" },
+    });
+
+    res.status(200).json({
+      message: "Success getting tv genres",
+      success: true,
+      response: response.data,
+    });
+  } catch (error) {
+    handleError(res, error);
+  }
 };
 
 export {
@@ -164,4 +205,6 @@ export {
   getTrendingTodayTv,
   searchTv,
   getTvDetails,
+  getTvRecommendations,
+  getTvGenres,
 };
