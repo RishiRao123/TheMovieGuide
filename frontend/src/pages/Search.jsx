@@ -4,41 +4,35 @@ import { Search as SearchIcon } from "lucide-react";
 import SearchIdle from "../components/SearchIdle";
 import SearchResult from "../features/Movies/SearchResult";
 
-const BackendUrl = import.meta.env.VITE_BACKEND_URL;
-
 const Search = () => {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const [activeTab, setActiveTab] = useState("all");
+  const [cache, setCache] = useState({}); 
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
 
-
   const BackendUrl = import.meta.env.VITE_BACKEND_URL;
 
-  // 🔹 Movies search
-  const fetchMovies = async (q, page = 1) => {
+  const fetchMovies = async (q, page) => {
     const { data } = await axios.get(`${BackendUrl}/api/v1/movies/search`, {
       params: { q, page },
     });
     return data.response.results || [];
   };
 
-  // 🔹 TV search
-  const fetchTv = async (q, page = 1) => {
+  const fetchTv = async (q, page) => {
     const { data } = await axios.get(`${BackendUrl}/api/v1/tv/search`, {
       params: { q, page },
     });
     return data.response.results || [];
   };
 
-  // 🔹 Combined (for "all" tab)
-  const fetchAll = async (q, page = 1) => {
-    const [moviesRes, tvRes] = await Promise.all([
-      fetchMovies(q, page),
-      fetchTv(q, page),
-    ]);
-    return [...moviesRes, ...tvRes];
+  const fetchAll = async (q, page) => {
+    const { data } = await axios.get(`${BackendUrl}/api/v1/multi/search`, {
+      params: { q, page },
+    });
+    return data.response.results || [];
   };
 
   useEffect(() => {
@@ -48,12 +42,18 @@ const Search = () => {
       return;
     }
 
+    const key = `${query}-${activeTab}-${page}`;
+
+    if (cache[key]) {
+      setResults(cache[key]);
+      return;
+    }
+
     const delayDebounce = setTimeout(async () => {
       try {
         setLoading(true);
-        setResults([]);
-
         let data = [];
+
         if (activeTab === "movies") {
           data = await fetchMovies(query, page);
         } else if (activeTab === "tv") {
@@ -63,6 +63,9 @@ const Search = () => {
         }
 
         setResults(data);
+
+        setCache((prev) => ({ ...prev, [key]: data }));
+
         setLoading(false);
       } catch (err) {
         console.error("Error fetching search results:", err);
@@ -92,7 +95,7 @@ const Search = () => {
                 placeholder='Search for movies, TV shows...'
                 value={query}
                 onChange={(e) => {
-                  setPage(1); // reset to page 1 when typing new query
+                  setPage(1);
                   setQuery(e.target.value);
                 }}
                 className='w-full h-12 text-white placeholder-gray-500 rounded-lg px-4 pr-10 focus:outline-none focus:ring-2 focus:ring-yellow-500'

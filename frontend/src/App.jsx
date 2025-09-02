@@ -1,14 +1,14 @@
 import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Movies from "./pages/Movies";
-import Moviedetails from "./pages/Moviedetails";
+import MovieDetails from "./pages/MovieDetails";
 import Watchlist from "./pages/Watchlist";
-import MovieDetails from "./pages/Moviedetails";
 import TvDetails from "./pages/TvDetails";
 import { MediaProvider } from "./context/MediaContext";
 import Search from "./pages/Search";
@@ -19,7 +19,19 @@ function App() {
   return (
     <>
       <MediaProvider>
-        <ToastContainer />
+        <ToastContainer
+          position='top-center'
+          autoClose={1500}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme='dark'
+        />
+
         <Navbar></Navbar>
         <Routes>
           <Route path='/' element={<Home></Home>}></Route>
@@ -30,7 +42,7 @@ function App() {
           <Route path='/search' element={<Search></Search>}></Route>
           <Route
             path='/movie-details'
-            element={<Moviedetails></Moviedetails>}
+            element={<MovieDetails></MovieDetails>}
           ></Route>
           <Route path='/watchlist' element={<Watchlist></Watchlist>}></Route>
           <Route path='/favorites' element={<Favourites></Favourites>}></Route>

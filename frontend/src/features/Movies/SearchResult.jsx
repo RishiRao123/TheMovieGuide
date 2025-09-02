@@ -86,7 +86,7 @@ const SearchResult = ({
               );
             }
 
-            return null; // safety
+            return null;
           })}
         </div>
 
@@ -112,12 +112,12 @@ const SearchResult = ({
 
       {/* Tabs */}
       <div className='mb-6'>
-        <div className='bg-gray-900 rounded-lg p-1 inline-flex space-x-1'>
+        <div className='bg-[#131B29] rounded-lg p-2 inline-flex space-x-2'>
           <button
             onClick={() => setActiveTab("all")}
-            className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+            className={`px-6 py-3 text-sm font-semibold rounded-md transition-colors ${
               activeTab === "all"
-                ? "bg-black text-white"
+                ? "bg-yellow-500 text-black shadow-md"
                 : "text-gray-400 hover:bg-gray-800"
             }`}
           >
@@ -125,9 +125,9 @@ const SearchResult = ({
           </button>
           <button
             onClick={() => setActiveTab("movies")}
-            className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+            className={`px-6 py-3 text-sm font-semibold rounded-md transition-colors ${
               activeTab === "movies"
-                ? "bg-black text-white"
+                ? "bg-yellow-500 text-black shadow-md"
                 : "text-gray-400 hover:bg-gray-800"
             }`}
           >
@@ -135,9 +135,9 @@ const SearchResult = ({
           </button>
           <button
             onClick={() => setActiveTab("tv")}
-            className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
+            className={`px-6 py-3 text-sm font-semibold rounded-md transition-colors ${
               activeTab === "tv"
-                ? "bg-black text-white"
+                ? "bg-yellow-500 text-black shadow-md"
                 : "text-gray-400 hover:bg-gray-800"
             }`}
           >
