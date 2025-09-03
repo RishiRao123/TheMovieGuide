@@ -1,6 +1,7 @@
 import UserModel from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { handleError } from "../constants/constants.js";
 
 const signUp = async (req, res) => {
   try {
@@ -36,10 +37,7 @@ const signUp = async (req, res) => {
       user: userModel,
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Internal server error",
-      success: false,
-    });
+    handleError(res, error);
   }
 };
 
@@ -76,11 +74,29 @@ const login = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    res.status(500).json({
-      message: "Internal server error",
-      success: false,
-    });
+    handleError(res, error);
   }
 };
 
-export { signUp, login };
+// Identify user
+const getMe = async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.user.id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+        success: false,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    handleError(res, error);
+  }
+};
+
+export { signUp, login, getMe };
