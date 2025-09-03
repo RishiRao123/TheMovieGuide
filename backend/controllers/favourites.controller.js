@@ -1,6 +1,6 @@
 import FavouriteModel from "../models/favourites.model.js";
 
-// Get user favourite movies
+// Get user favourites
 const getUserFavourites = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -28,49 +28,40 @@ const getUserFavourites = async (req, res) => {
   }
 };
 
-// Post favourite
+// Add favourite
 const addFavourite = async (req, res) => {
   try {
     const userId = req.user.id;
-    const {
-      movieId,
-      mediaType,
-      movieTitle,
-      moviePoster,
-      movieReleaseDate,
-      movieOverview,
-      movieRating,
-    } = req.body;
+    const { mediaId, mediaType, mediaTitle, mediaPoster, mediaRating } =
+      req.body;
 
-    if (!movieId || !mediaType) {
+    if (!mediaId || !mediaType) {
       return res.status(400).json({
-        message: "Movie ID and mediaType are required",
+        message: "mediaId and mediaType are required",
         success: false,
       });
     }
 
     const favourite = new FavouriteModel({
       user: userId,
-      movieId,
+      mediaId,
       mediaType,
-      movieTitle,
-      moviePoster,
-      movieReleaseDate,
-      movieOverview,
-      movieRating,
+      mediaTitle,
+      mediaPoster,
+      mediaRating,
     });
 
     await favourite.save();
 
     return res.status(201).json({
-      message: "Movie added to favourites",
+      message: "Added to favourites",
       success: true,
       favourite,
     });
   } catch (error) {
     if (error.code === 11000) {
       return res.status(400).json({
-        message: "Movie is already in favourites",
+        message: "Already in favourites",
         success: false,
       });
     }
@@ -87,18 +78,18 @@ const addFavourite = async (req, res) => {
 const deleteFavourite = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { movieId } = req.params;
+    const { mediaId } = req.params;
 
-    if (!movieId) {
+    if (!mediaId) {
       return res.status(400).json({
-        message: "Movie ID is required",
+        message: "mediaId is required",
         success: false,
       });
     }
 
     const deleted = await FavouriteModel.findOneAndDelete({
       user: userId,
-      movieId: movieId,
+      mediaId,
     });
 
     if (!deleted) {
@@ -109,7 +100,7 @@ const deleteFavourite = async (req, res) => {
     }
 
     return res.status(200).json({
-      message: "Movie removed from favourites",
+      message: "Removed from favourites",
       success: true,
     });
   } catch (error) {

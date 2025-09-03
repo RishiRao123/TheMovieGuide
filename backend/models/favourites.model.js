@@ -7,7 +7,7 @@ const FavouriteSchema = new Schema(
       ref: "User",
       required: true,
     },
-    movieId: {
+    mediaId: {
       type: String,
       required: true,
     },
@@ -15,22 +15,27 @@ const FavouriteSchema = new Schema(
       type: String,
       required: true,
     },
-    movieTitle: String,
-    moviePoster: String,
-    movieReleaseDate: String,
-    movieOverview: String,
-    movieRating: Number,
+    mediaTitle: {
+      type: String,
+      required: true,
+    },
+    mediaPoster: {
+      type: String,
+      required: true,
+    },
+    mediaRating: {
+      type: Number,
+      default: null,
+    },
     addedAt: {
       type: Date,
       default: Date.now,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-FavouriteSchema.index({ user: 1, movieId: 1 }, { unique: true });
+FavouriteSchema.index({ user: 1, mediaId: 1 }, { unique: true });
 
 const FavouriteModel = mongoose.model("Favourite", FavouriteSchema);
 export default FavouriteModel;

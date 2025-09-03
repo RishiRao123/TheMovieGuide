@@ -31,9 +31,9 @@ router.put(
 router.delete("/user/profileDelete/:userId", authUser, deleteUserProfile);
 
 // user favourites route
-router.get("/user/favourites", authUser, getUserFavourites);
-router.post("/user/favourites", authUser, addFavourite);
-router.delete("/user/favourites/:movieId", authUser, deleteFavourite);
+router.get("/user/favorites", authUser, getUserFavourites);
+router.post("/user/favorites", authUser, addFavourite);
+router.delete("/user/favorites/:mediaId", authUser, deleteFavourite);
 
 // user watchlist routes
 router.post("/user/watchlist/:userId", authUser, addToWatchlist);
